@@ -35,6 +35,29 @@ def newMovie():
 	else:
 		return render_template('newForm.html', new = 'movie')
 
+@app.route('/marvels/movie/<int:movie_id>/edit', methods = ['GET', 'POST'])
+def editMovie(movie_id):
+	movie = session.query(Movie).filter_by(id = movie_id).one()
+	if request.method == 'POST':
+		movie.name = request.form['inputName']
+		movie.description = request.form['inputDescription']
+		movie.image_path = request.form['inputLink']
+		session.add(movie)
+		session.commit()
+		return redirect(url_for('showMovies'))
+	return render_template('editForm.html', movie = movie, edit = "movie")
+
+@app.route('/marvel/hero/<int:hero_id>/edit', methods = ['GET', 'POST'])
+def editHero(hero_id):
+	hero = session.query(Character).filter_by(id = hero_id).one()
+	if request.method == 'POST':
+		hero.name = request.form['inputName']
+		hero.description = request.form['inputDescription']
+		hero.image_path = request.form['inputLink']
+		session.add(hero)
+		session.commit()
+		return redirect(url_for('showHeroes'))
+	return render_template('editForm.html', hero = hero, edit = "hero")
 
 @app.route('/marvels/heroes/new', methods = ['GET', 'POST'])
 def newHero():

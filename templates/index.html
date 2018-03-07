@@ -29,6 +29,8 @@
             <div class="card-content">
               <p class="truncate">{{movie.description}}</p>
             </div>
+            <a class="material-icons" style="margin-left: 10px; margin-bottom: 10px; color: inherit;" href="{{url_for('editMovie', movie_id = movie.id)}}">edit</a>
+            <a class="material-icons" style="margin-left: 10px; margin-bottom: 10px; color: inherit;">delete</a>
           </div>
         </div>
       {% endfor %}
@@ -43,6 +45,8 @@
             <div class="card-content">
               <p class="truncate">{{hero.description}}</p>
             </div>
+            <a class="material-icons" style="margin-left: 10px; margin-bottom: 10px; color: inherit;" href="{{url_for('editHero', hero_id = hero.id)}}">edit</a>
+            <a class="material-icons" style="margin-left: 10px; margin-bottom: 10px; color: inherit;">delete</a>
           </div>
         </div>
       {% endfor %}

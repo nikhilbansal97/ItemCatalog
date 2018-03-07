@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link type="text/css" rel="stylesheet" href="{{url_for('static', filename='css/materialize.min.css')}}">
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+	<div class="row" style="margin: auto;">
+    <div class="col s12 m12 l12" style="padding-left: 30%; padding-right: 30%;">
+      <div class="card blue-grey darken-1">
+        <div class="card-content white-text">
+          {% if edit == "hero" %}
+          <span class="card-title">Edit Hero</span>
+          {% else %}
+          <span class="card-title">Edit Movie</span>
+          {% endif %}
+          <div class="row">
+            {% if edit == "hero" %}
+            <form class="col s12" action="{{url_for('editHero', hero_id = hero.id)}}" method="post">
+            {% else %}
+            <form class="col s12" action="{{url_for('editMovie', movie_id = movie.id)}}" method="post">
+              {% endif %}
+              <div class="row">
+                <div class="input-field col s12">
+                  {% if edit == "hero" %}
+                  <input id="name" type="text" name="inputName" value="{{hero.name}}" />
+                  {% else %}
+                  <input id="name" type="text" name="inputName" value="{{movie.name}}" />
+                  {% endif %}
+                  <label for="name">Name</label>
+                </div>
+              </div>
+              <div class="row">
+                <div class="input-field col s12">
+                  {% if edit == "hero" %}
+                  <textarea id="description" class="materialize-textarea" name="inputDescription" value="{{hero.description}}"></textarea>
+                  {% else %}
+                  <textarea id="description" class="materialize-textarea" name="inputDescription" value="{{movie.description}}"></textarea>
+                  {% endif %}
+                  <label for="description">Description</label>
+                </div>
+              </div>
+              <div class="row">
+                <div class="input-field col s12">
+                  {% if edit == "hero" %}
+                  <input id="image_link" type="text" name="inputLink" value="{{hero.image_path}}" />
+                  {% else %}
+                  <input id="image_link" type="text" name="inputLink" value="{{movie.image_path}}" />
+                  {% endif %}
+                  <label for="image_link">Link to Thumbnail</label>
+                </div>
+              </div>
+              <div class="card-action">
+                <input class="waves-effect waves-light btn red" type="submit" value="Save" />
+                {% if edit == "hero" %}
+                <a class="waves-effect waves-light btn grey" href="/marvels/heroes">Cancel</a>
+                {% else %}
+                <a class="waves-effect waves-light btn grey" href="/marvels/movies">Cancel</a>
+                {% endif %}
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
+</body>
+</html>
