@@ -16,31 +16,35 @@
             {% endif %}
               <div class="row">
               	{% if new == "hero" %}
-			    <form class="col s12" action="/marvels/hero/new" method="post">
+			    <form class="col s12" action="{{url_for('newHero')}}" method="post">
 			    {% else %}
-			    <form class="col s12" action="/marvels/movie/new" method="post">
+			    <form class="col s12" action="{{url_for('newMovie')}}" method="post">
 			    {% endif %}
 			      <div class="row">
 			        <div class="input-field col s12">
-			          <input id="name" type="text">
+			          <input id="name" type="text" name="inputName">
 			          <label for="name">Name</label>
 			        </div>
 			      </div>
 			      <div class="row">
         			<div class="input-field col s12">
-          				<textarea id="description" class="materialize-textarea"></textarea>
+          				<textarea id="description" class="materialize-textarea" name="inputDescription"></textarea>
           				<label for="description">Description</label>
         			</div>
 			      </div>
 			      <div class="row">
 			        <div class="input-field col s12">
-			          <input id="image_link" type="text">
+			          <input id="image_link" type="text" name="inputLink">
 			          <label for="image_link">Link to Thumbnail</label>
 			        </div>
 			      </div>
 			      <div class="card-action">
-              		<a class="waves-effect waves-light btn red" type="submit">Save</a>
+              		<input class="waves-effect waves-light btn red" type="submit" value="Save" />
+              		{% if new == "hero" %}
+              		<a class="waves-effect waves-light btn grey" href="/marvels/heroes">Cancel</a>
+              		{% else %}
               		<a class="waves-effect waves-light btn grey" href="/marvels/movies">Cancel</a>
+              		{% endif %}
             	  </div>
 			    </form>
 			  </div>

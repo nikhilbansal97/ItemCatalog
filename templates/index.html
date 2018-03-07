@@ -5,7 +5,6 @@
 	<link type="text/css" rel="stylesheet" href="{{url_for('static', filename='css/materialize.min.css')}}">
 	<link type="text/css" rel="stylesheet" href="{{url_for('static', filename='css/index.css')}}">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-
 </head>
 <body>
 	<nav>
@@ -19,7 +18,8 @@
     </div>
   </nav>
   <div class="row">
-  {% for movie in moviesList %}
+    {% if showContent == "movies" %}
+      {% for movie in moviesList %}
         <div class="col s12 m6 l2" style="max-height: 500px;">
           <div class="card">
             <div class="card-image">
@@ -31,18 +31,33 @@
             </div>
           </div>
         </div>
-  {% endfor %}
+      {% endfor %}
+    {% else %}
+      {% for hero in heroesList %}
+        <div class="col s12 m6 l2" style="max-height: 500px;">
+          <div class="card">
+            <div class="card-image">
+              <img src="{{hero.image_path}}" style="padding: 2px; height: 350px; width: 100%;">
+              <span class="card-title">{{hero.name}}</span>
+            </div>
+            <div class="card-content">
+              <p class="truncate">{{hero.description}}</p>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    {% endif %}
   </div>
   <div class="fixed-action-btn">
     <a class="btn-floating btn-large red">
       <i class="large material-icons">mode_edit</i>
     </a>
-    <ul>
-      <li><p>Charcter</p><a class="btn-floating yellow darken-1" href="/marvels/heroes/new"><i class="material-icons">person_add</i></a></li>
+    <ul style="display: inline-block;">
+      <li>Charcter<a class="btn-floating yellow darken-1" href="/marvels/heroes/new"><i class="material-icons">person_add</i></a></li>
       <li><p>Movie</p><a class="btn-floating red" href="/marvels/movies/new"><i class="material-icons">local_movies</i></a></li>
     </ul>
   </div>
   <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
-</body>
+</body>>
 </html>
