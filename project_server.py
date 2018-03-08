@@ -59,6 +59,22 @@ def editHero(hero_id):
 		return redirect(url_for('showHeroes'))
 	return render_template('editForm.html', hero = hero, edit = "hero")
 
+@app.route('/marvel/hero/<int:hero_id>/delete', methods = ['GET', 'POST'])
+def deleteHero(hero_id):
+	hero = session.query(Character).filter_by(id = hero_id).one()
+	if request.method == 'POST':
+		session.delete(hero)
+		session.commit()
+		return redirect(url_for('showHeroes'))
+
+@app.route('/marvel/movie/<int:movie_id>/delete', methods = ['GET','POST'])
+def deleteMovie(movie_id):
+	movie = session.query(Movie).filter_by(id = movie_id).one()
+	if request.method == 'POST':
+		session.delete(movie)
+		session.commit()
+		return redirect(url_for('showMovies'))
+
 @app.route('/marvels/heroes/new', methods = ['GET', 'POST'])
 def newHero():
 	if request.method == 'POST':

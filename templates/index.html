@@ -19,37 +19,61 @@
   </nav>
   <div class="row">
     {% if showContent == "movies" %}
-      {% for movie in moviesList %}
-        <div class="col s12 m6 l2" style="max-height: 500px;">
-          <div class="card">
-            <div class="card-image">
-              <img src="{{movie.image_path}}" style="padding: 2px; height: 350px; width: 100%;">
-              <span class="card-title">{{movie.name}}</span>
-            </div>
-            <div class="card-content">
-              <p class="truncate">{{movie.description}}</p>
-            </div>
-            <a class="material-icons" style="margin-left: 10px; margin-bottom: 10px; color: inherit;" href="{{url_for('editMovie', movie_id = movie.id)}}">edit</a>
-            <a class="material-icons" style="margin-left: 10px; margin-bottom: 10px; color: inherit;">delete</a>
-          </div>
+    {% for movie in moviesList %}
+    <div class="col s12 m6 l2" style="max-height: 500px;">
+      <div class="card">
+        <div class="card-image">
+          <img src="{{movie.image_path}}" style="padding: 2px; height: 350px; width: 100%;">
+          <span class="card-title">{{movie.name}}</span>
         </div>
-      {% endfor %}
+        <div class="card-content">
+          <p class="truncate">{{movie.description}}</p>
+        </div>
+        <a class="material-icons" style="margin-left: 10px; margin-bottom: 10px; color: inherit;" href="{{url_for('editMovie', movie_id = movie.id)}}">edit</a>
+        <a class="material-icons modal-trigger" style="margin-left: 10px; margin-bottom: 10px; color: inherit;" href="#deleteMovieModal">delete</a>
+      </div>
+    </div>
+    <div id="deleteMovieModal" class="modal">
+      <div class="modal-content">
+        <h4>Are you sure??</h4>
+      </div>
+      <div class="modal-footer">
+        <a href="#deleteMovieForm" onclick="submitMovieDelete()" class="modal-action modal-close waves-effect waves-green btn-flat">Yes</a>
+        <p class="modal-close waves-effect waves-green btn-flat">No</p>
+      </div>
+    </div>
+    <form id="deleteMovieForm" action="{{url_for('deleteMovie', movie_id = movie.id)}}" method="POST">
+      <input type="submit" id="deleteMovieButton" style="display: none;" />
+    </form>
+    {% endfor %}
     {% else %}
-      {% for hero in heroesList %}
-        <div class="col s12 m6 l2" style="max-height: 500px;">
-          <div class="card">
-            <div class="card-image">
-              <img src="{{hero.image_path}}" style="padding: 2px; height: 350px; width: 100%;">
-              <span class="card-title">{{hero.name}}</span>
-            </div>
-            <div class="card-content">
-              <p class="truncate">{{hero.description}}</p>
-            </div>
-            <a class="material-icons" style="margin-left: 10px; margin-bottom: 10px; color: inherit;" href="{{url_for('editHero', hero_id = hero.id)}}">edit</a>
-            <a class="material-icons" style="margin-left: 10px; margin-bottom: 10px; color: inherit;">delete</a>
-          </div>
+    {% for hero in heroesList %}
+    <div class="col s12 m6 l2" style="max-height: 500px;">
+      <div class="card">
+        <div class="card-image">
+          <img src="{{hero.image_path}}" style="padding: 2px; height: 350px; width: 100%;">
+          <span class="card-title">{{hero.name}}</span>
         </div>
-      {% endfor %}
+        <div class="card-content">
+          <p class="truncate">{{hero.description}}</p>
+        </div>
+        <a class="material-icons" style="margin-left: 10px; margin-bottom: 10px; color: inherit;" href="{{url_for('editHero', hero_id = hero.id)}}">edit</a>
+        <a class="material-icons modal-trigger" style="margin-left: 10px; margin-bottom: 10px; color: inherit;" href="#deleteHeroModal">delete</a>
+      </div>
+    </div>
+    <div id="deleteHeroModal" class="modal">
+      <div class="modal-content">
+        <h4>Are you sure??</h4>
+      </div>
+      <div class="modal-footer">
+        <a href="#deleteHeroForm" onclick="submitHeroDelete()" class="modal-action modal-close waves-effect waves-green btn-flat">Yes</a>
+        <p class="modal-close waves-effect waves-green btn-flat">No</p>
+      </div>
+    </div>
+    <form id="deleteHeroForm" action="{{url_for('deleteHero', hero_id = hero.id)}}" method="POST">
+      <input type="submit" id="deleteHeroButton" style="display: none;" />
+    </form>
+    {% endfor %}
     {% endif %}
   </div>
   <div class="fixed-action-btn">
@@ -63,5 +87,17 @@
   </div>
   <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
+  <script type="text/javascript">
+      $(document).ready(function(){
+        // the "href" attribute of the modal trigger must specify the modal ID that wants to be triggered
+        $('.modal').modal();
+      });
+      function submitMovieDelete() {
+        $('#deleteMovieButton').click();
+      };
+      function submitHeroDelete(argument) {
+        $('#deleteHeroButton').click();
+      };
+  </script>
 </body>>
 </html>
