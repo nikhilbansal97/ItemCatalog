@@ -32,12 +32,12 @@
               </div>
               <div class="row">
                 <div class="input-field col s12">
-                  {% if edit == "hero" %}
-                  <textarea id="description" class="materialize-textarea" name="inputDescription" value="{{hero.description}}"></textarea>
-                  {% else %}
-                  <textarea id="description" class="materialize-textarea" name="inputDescription" value="{{movie.description}}"></textarea>
-                  {% endif %}
                   <label class="active" for="description">Description</label>
+                  {% if edit == "hero" %}
+                  <textarea id="description" class="materialize-textarea" name="inputDescription">{{hero.description}}</textarea>
+                  {% else %}
+                  <textarea id="description" class="materialize-textarea" name="inputDescription">{{movie.description}}</textarea>
+                  {% endif %}
                 </div>
               </div>
               <div class="row">
