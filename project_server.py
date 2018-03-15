@@ -3,7 +3,7 @@ from flask import session as login_session
 import random, string
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from database_setup import Base, Character, Movie
+from database_setup import Base, Character, Movie, User
 #For signin
 from oauth2client.client import flow_from_clientsecrets
 from oauth2client.client import FlowExchangeError
@@ -26,11 +26,126 @@ session = Session()
 @app.route('/marvels/movies', methods = ['GET', 'POST'])
 def showMovies():
 	moviesList = session.query(Movie).all()
-	if login_session['access_token'] is None:
+	user = None
+	if 'access_token' not in login_session or login_session['access_token'] is None:
 		loginStatus = 0
 	else:
 		loginStatus = 1
-	return render_template('index.html', moviesList = moviesList, showContent = "movies", loginStatus = loginStatus)
+		user = session.query(User).filter_by(email = login_session['email']).one()
+	return render_template('index.html', moviesList = moviesList, showContent = "movies", loginStatus = loginStatus, user = user)
+
+def getRandomToken():
+	api_token = ''.join(random.choice(string.ascii_lowercase + string.digits) for x in range(16))
+	return api_token
+
+@app.route('/marvels/movies/json')
+def getMoviesJson():
+	queryParams = request.args
+	if 'access_token' not in login_session or login_session['access_token'] is None:
+		response = make_response(json.dumps('User not Logged in!'), 401)
+		response.headers['Content-Type'] = "application/json"
+		return response
+	if 'api_key' in queryParams and len(queryParams['api_key']) > 0:
+		user = session.query(User).filter_by(api_key = queryParams['api_key']).one_or_none()
+		if user is None:
+			response = make_response(json.dumps('Wrong API Key'), 401)
+			response.headers['Content-Type'] = "application/json"
+			return response
+		else:
+			moviesList = session.query(Movie).all()
+			return jsonify([movie.serialize for movie in moviesList])
+	elif 'api_key' not in queryParams:
+		response = make_response(json.dumps('api_key parameter not found'), 401)
+		response.headers['Content-Type'] = "application/json"
+		return response
+	elif len(queryParams['api_key']) == 0:
+		response = make_response(json.dumps('No api key found!'), 401)
+		response.headers['Content-Type'] = "application/json"
+		return response
+
+
+@app.route('/marvels/characters/json')
+def getCharactersJson():
+	queryParams = request.args
+	if 'access_token' not in login_session or login_session['access_token'] is None:
+		response = make_response(json.dumps('User not Logged in!'), 401)
+		response.headers['Content-Type'] = "application/json"
+		return response
+	if 'api_key' in queryParams and len(queryParams['api_key']) > 0:
+		user = session.query(User).filter_by(api_key = queryParams['api_key']).one_or_none()
+		if user is None:
+			response = make_response(json.dumps('Wrong API Key'), 401)
+			response.headers['Content-Type'] = "application/json"
+			return response
+		else:
+			characterList = session.query(Character).all()
+			return jsonify([character.serialize for character in characterList])
+	elif 'api_key' not in queryParams:
+		response = make_response(json.dumps('api_key parameter not found'), 401)
+		response.headers['Content-Type'] = "application/json"
+		return response
+	elif len(queryParams['api_key']) == 0:
+		response = make_response(json.dumps('No api key found!'), 401)
+		response.headers['Content-Type'] = "application/json"
+		return response
+
+@app.route('/marvels/characters/<int:id>/json')
+def getSpecificCharacterJson(id):
+	queryParams = request.args
+	if 'access_token' not in login_session or login_session['access_token'] is None:
+		response = make_response(json.dumps('User not Logged in!'), 401)
+		response.headers['Content-Type'] = "application/json"
+		return response
+	if 'api_key' in queryParams and len(queryParams['api_key']) > 0:
+		user = session.query(User).filter_by(api_key = queryParams['api_key']).one_or_none()
+		if user is None:
+			response = make_response(json.dumps('Wrong API Key'), 401)
+			response.headers['Content-Type'] = "application/json"
+			return response
+		else:
+			character = session.query(Character).filter_by(id = id).one_or_none()
+			if character is None:
+				response = make_response(json.dumps('No Character Found'), 401)
+				response.headers['Content-Type'] = "application/json"
+				return response
+			return jsonify(character.serialize)
+	elif 'api_key' not in queryParams:
+		response = make_response(json.dumps('api_key parameter not found'), 401)
+		response.headers['Content-Type'] = "application/json"
+		return response
+	elif len(queryParams['api_key']) == 0:
+		response = make_response(json.dumps('No api key found!'), 401)
+		response.headers['Content-Type'] = "application/json"
+		return response
+
+@app.route('/marvels/movies/<int:id>/json')
+def getSpecificMoveiJson(id):
+	queryParams = request.args
+	if 'access_token' not in login_session or login_session['access_token'] is None:
+		response = make_response(json.dumps('User not Logged in!'), 401)
+		response.headers['Content-Type'] = "application/json"
+		return response
+	if 'api_key' in queryParams and len(queryParams['api_key']) > 0:
+		user = session.query(User).filter_by(api_key = queryParams['api_key']).one_or_none()
+		if user is None:
+			response = make_response(json.dumps('Wrong API Key'), 401)
+			response.headers['Content-Type'] = "application/json"
+			return response
+		else:
+			movie = session.query(Movie).filter_by(id = id).one_or_none()
+			if movie is None:
+				response = make_response(json.dumps('No Movie Found'), 401)
+				response.headers['Content-Type'] = "application/json"
+				return response
+			return jsonify(movie.serialize)
+	elif 'api_key' not in queryParams:
+		response = make_response(json.dumps('api_key parameter not found'), 401)
+		response.headers['Content-Type'] = "application/json"
+		return response
+	elif len(queryParams['api_key']) == 0:
+		response = make_response(json.dumps('No api key found!'), 401)
+		response.headers['Content-Type'] = "application/json"
+		return response
 
 @app.route('/login')
 def login():
@@ -50,25 +165,17 @@ def gconnect():
 		oauth_flow = flow_from_clientsecrets('client_secrets.json', scope = "")
 		oauth_flow.redirect_uri = "postmessage"
 		credentials = oauth_flow.step2_exchange(code)
-		print ("CREDENTIALS RETURNED BY OAUTH2: ")
-		print (credentials)
 	except FlowExchangeError:
 		response = make_response(json.dumps('Failed to upgrade the authorization code.', 401))
 		response.headers['Content-Type'] = "application/json"
 		return response
 	# Check that the acess token is valid
 	access_token = credentials.access_token
-	print ("Access token received in exchange of one time code : ")
-	print (access_token)
 	url = ("https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=%s" % access_token)
 	h = httplib2.Http()
 	resp, content = h.request(url, 'GET')
-	for r in resp:
-		print (r, ":", resp[r], "\n")
-	print ("Content is \n", content)
 	result = json.loads(content.decode('utf-8'))
-	print ("RESULT RECEIVED WHEN THE ACCESS TOKEN RECEIVED BY THE OAUTH2 IS CHECKED FOR VALIDITY")
-	print (result)
+	
 	# If there was an error in access token, abort.
 	if 'error' in result:
 		response = make_request(json.dumps("Token's user ID doesn't match the given user id"), 401)
@@ -96,21 +203,21 @@ def gconnect():
 	login_session['access_token'] = credentials.access_token
 	login_session['gplus_id'] = gplus_id
 
-	print ("access_token -> \n", credentials.access_token)
-	print ("gplus_id -> \n", gplus_id)
-
 	# Get user info
 	userinfo_url = "https://www.googleapis.com/oauth2/v1/userinfo"
 	params = {'access_token': credentials.access_token, 'alt':'json'}
 	answer = requests.get(userinfo_url, params = params)
 	data = json.loads(answer.text)
 
-	print("User information for the token")
-	print(answer.text)
-
 	login_session['username'] = data["name"]
 	login_session['picture'] = data["picture"]
 	login_session['email'] = data["email"]
+
+	userInfo = session.query(User).filter_by(email = data["email"]).one_or_none()
+	if userInfo is None:
+		newUser = User(name = data["name"], email = data["email"], api_key = getRandomToken())
+		session.add(newUser)
+		session.commit()
 
 	output = ''
 	output += '<h1>Welcome, '
@@ -125,7 +232,7 @@ def gconnect():
 
 @app.route('/gdisconnect')
 def gdisconnect():
-	if login_session['access_token'] is None:
+	if 'access_token' not in login_session or login_session['access_token'] is None:
 		return redirect(url_for('showMovies'))
 	access_token = login_session.get('access_token')
 	if access_token is None:
@@ -145,14 +252,20 @@ def gdisconnect():
 @app.route('/marvels/heroes', methods = ['GET', 'POST'])
 def showHeroes():
 	heroesList = session.query(Character).all()
+	user = None
 	if login_session['access_token'] is None:
 		loginStatus = 0
 	else:
 		loginStatus = 1
-	return render_template('index.html', heroesList = heroesList, showContent = "heroes", loginStatus = loginStatus)
+		user = session.query(User).filter_by(email = login_session['email']).one()
+	return render_template('index.html', heroesList = heroesList, showContent = "heroes", loginStatus = loginStatus, user = user)
 
 @app.route('/marvels/movies/new', methods = ['GET','POST'])
 def newMovie():
+	if 'access_token' not in login_session or login_session['access_token'] is None:
+		response = make_response(json.dumps('User not Logged in!'), 401)
+		response.headers['Content-Type'] = "application/json"
+		return response
 	if request.method == 'POST':
 		name = request.form['inputName']
 		description = request.form['inputDescription']
@@ -164,8 +277,12 @@ def newMovie():
 	else:
 		return render_template('newForm.html', new = 'movie')
 
-@app.route('/marvels/movie/<int:movie_id>/edit', methods = ['GET', 'POST'])
+@app.route('/marvels/movies/<int:movie_id>/edit', methods = ['GET', 'POST'])
 def editMovie(movie_id):
+	if 'access_token' not in login_session or login_session['access_token'] is None:
+		response = make_response(json.dumps('User not Logged in!'), 401)
+		response.headers['Content-Type'] = "application/json"
+		return response
 	movie = session.query(Movie).filter_by(id = movie_id).one()
 	if request.method == 'POST':
 		movie.name = request.form['inputName']
@@ -176,8 +293,12 @@ def editMovie(movie_id):
 		return redirect(url_for('showMovies'))
 	return render_template('editForm.html', movie = movie, edit = "movie")
 
-@app.route('/marvel/hero/<int:hero_id>/edit', methods = ['GET', 'POST'])
+@app.route('/marvel/heros/<int:hero_id>/edit', methods = ['GET', 'POST'])
 def editHero(hero_id):
+	if 'access_token' not in login_session or login_session['access_token'] is None:
+		response = make_response(json.dumps('User not Logged in!'), 401)
+		response.headers['Content-Type'] = "application/json"
+		return response
 	hero = session.query(Character).filter_by(id = hero_id).one()
 	if request.method == 'POST':
 		hero.name = request.form['inputName']
@@ -188,16 +309,24 @@ def editHero(hero_id):
 		return redirect(url_for('showHeroes'))
 	return render_template('editForm.html', hero = hero, edit = "hero")
 
-@app.route('/marvel/hero/<int:hero_id>/delete', methods = ['POST'])
+@app.route('/marvel/heros/<int:hero_id>/delete', methods = ['POST'])
 def deleteHero(hero_id):
+	if 'access_token' not in login_session or login_session['access_token'] is None:
+		response = make_response(json.dumps('User not Logged in!'), 401)
+		response.headers['Content-Type'] = "application/json"
+		return response
 	hero = session.query(Character).filter_by(id = hero_id).one()
 	if request.method == 'POST':
 		session.delete(hero)
 		session.commit()
 		return redirect(url_for('showHeroes'))
 
-@app.route('/marvel/movie/<int:movie_id>/delete', methods = ['POST'])
+@app.route('/marvel/movies/<int:movie_id>/delete', methods = ['POST'])
 def deleteMovie(movie_id):
+	if 'access_token' not in login_session or login_session['access_token'] is None:
+		response = make_response(json.dumps('User not Logged in!'), 401)
+		response.headers['Content-Type'] = "application/json"
+		return response
 	movie = session.query(Movie).filter_by(id = movie_id).one()
 	if request.method == 'POST':
 		session.delete(movie)
@@ -206,6 +335,10 @@ def deleteMovie(movie_id):
 
 @app.route('/marvels/heroes/new', methods = ['GET', 'POST'])
 def newHero():
+	if 'access_token' not in login_session or login_session['access_token'] is None:
+		response = make_response(json.dumps('User not Logged in!'), 401)
+		response.headers['Content-Type'] = "application/json"
+		return response
 	if request.method == 'POST':
 		name = request.form['inputName']
 		description = request.form['inputDescription']
