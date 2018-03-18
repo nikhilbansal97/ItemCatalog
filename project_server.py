@@ -317,7 +317,7 @@ def gdisconnect():
 def showHeroes():
     hList = session.query(Character).all()
     user = None
-    if lSession['access_token'] is None:
+    if 'access_token' not in lSession or lSession['access_token'] is None:
         login = 0
     else:
         login = 1
