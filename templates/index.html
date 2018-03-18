@@ -11,14 +11,14 @@
     <div class="nav-wrapper">
       <a href="#" class="brand-logo" style="padding-left: 20px;">Marvelous Catalog!!</a>
       <ul id="nav-mobile" class="right hide-on-med-and-down">
-        {% if loginStatus == 0 %}
+        {% if info[2] == 0 %}
         <li style="display: none;"><a href="/marvels/movies">API Token</a></li>
         {% else %}
         <li><a onclick="showApiModel()">API Token</a></li>
         {% endif %}
         <li><a href="/marvels/movies">Movies</a></li>
         <li><a href="/marvels/heroes">Heroes</a></li>
-        {% if loginStatus == 0 %}
+        {% if info[2] == 0 %}
         <li><a href="/login" class="waves-effect waves-light btn" >Login</a></li>
         {% else %}
         <li><a href="/gdisconnect" class="waves-effect waves-light btn" >Logout</a></li>
@@ -27,8 +27,8 @@
     </div>
   </nav>
   <div class="row">
-    {% if showContent == "movies" %}
-    {% for movie in moviesList %}
+    {% if info[1] == "movies" %}
+    {% for movie in info[0] %}
     <div class="col s12 m6 l2" style="max-height: 500px;">
       <div class="card z-depth-3">
         <div class="card-image">
@@ -38,7 +38,7 @@
         <div class="card-content">
           <p class="truncate">{{movie.description}}</p>
         </div>
-        {% if loginStatus == 1 %}
+        {% if info[2] == 1 %}
         <a class="material-icons" style="margin-left: 10px; margin-bottom: 10px; color: inherit;" href="{{url_for('editMovie', movie_id = movie.id)}}">edit</a>
         <a class="material-icons modal-trigger" style="margin-left: 10px; margin-bottom: 10px; color: inherit;" href="#deleteMovieModal">delete</a>
         {% else %}
@@ -61,7 +61,7 @@
     </form>
     {% endfor %}
     {% else %}
-    {% for hero in heroesList %}
+    {% for hero in info[0] %}
     <div class="col s12 m6 l2" style="max-height: 500px;">
       <div class="card z-depth-3">
         <div class="card-image">
@@ -95,7 +95,7 @@
       <i class="large material-icons">mode_edit</i>
     </a>
     <ul style="display: inline-block;">
-      {% if loginStatus == 1 %}
+      {% if info[2] == 1 %}
       <li>Charcter<a class="btn-floating yellow darken-1" href="/marvels/heroes/new"><i class="material-icons">person_add</i></a></li>
       <li><p>Movie</p><a class="btn-floating red" href="/marvels/movies/new"><i class="material-icons">local_movies</i></a></li>
       {% else %}
@@ -107,7 +107,7 @@
   <div id="apiTokenModal" class="modal">
     <div class="modal-content">
       <h4>API Token</h4>
-      <p>{{user.api_key}}</p>
+      <p>{{info[3].api_key}}</p>
     </div>
   </div>
   <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
@@ -118,14 +118,14 @@
         $('.modal').modal();
       });
       function submitMovieDelete() {
-        if (loginStatus == 1) {
+        if ({{info[2]}} == 1) {
           $('#deleteMovieButton').click();
         } else {
           console.log("Not logged in!");  
         }
       };
       function submitHeroDelete(argument) {
-        if (loginStatus == 1) {
+        if ({{info[2]}} == 1) {
           $('#deleteHeroButton').click();
         } else {
           console.log("Not logged in!");
