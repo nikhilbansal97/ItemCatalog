@@ -40,24 +40,24 @@
         </div>
         {% if info[2] == 1 %}
         <a class="material-icons" style="margin-left: 10px; margin-bottom: 10px; color: inherit;" href="{{url_for('editMovie', movie_id = movie.id)}}">edit</a>
-        <a class="material-icons modal-trigger" style="margin-left: 10px; margin-bottom: 10px; color: inherit;" href="#deleteMovieModal">delete</a>
+        <a class="material-icons modal-trigger" style="margin-left: 10px; margin-bottom: 10px; color: inherit;" href="#deleteMovieModal{{movie.id}}">delete</a>
         {% else %}
         <a class="material-icons" style="margin-left: 10px; margin-bottom: 10px; color: inherit; display: none;" href="{{url_for('editMovie', movie_id = movie.id)}}">edit</a>
         <a class="material-icons modal-trigger" style="margin-left: 10px; margin-bottom: 10px; color: inherit; display: none;" href="#deleteMovieModal">delete</a>
         {% endif %}
       </div>
     </div>
-    <div id="deleteMovieModal" class="modal">
+    <div id="deleteMovieModal{{movie.id}}" class="modal">
       <div class="modal-content">
         <h4>Are you sure??</h4>
       </div>
       <div class="modal-footer">
-        <a href="#deleteMovieForm" onclick="submitMovieDelete()" class="modal-action modal-close waves-effect waves-green btn-flat">Yes</a>
+        <a href="#deleteMovieForm{{movie.id}}" onclick="submitMovieDelete({{movie.id}})" class="modal-action modal-close waves-effect waves-green btn-flat">Yes</a>
         <p class="modal-close waves-effect waves-green btn-flat">No</p>
       </div>
     </div>
-    <form id="deleteMovieForm" action="{{url_for('deleteMovie', movie_id = movie.id)}}" method="POST">
-      <input type="submit" id="deleteMovieButton" style="display: none;" />
+    <form id="deleteMovieForm{{movie.id}}" action="{{url_for('deleteMovie', movie_id = movie.id)}}" method="POST">
+      <input type="submit" id="deleteMovieButton{{movie.id}}" style="display: none;" />
     </form>
     {% endfor %}
     {% else %}
@@ -72,20 +72,20 @@
           <p class="truncate">{{hero.description}}</p>
         </div>
         <a class="material-icons" style="margin-left: 10px; margin-bottom: 10px; color: inherit;" href="{{url_for('editHero', hero_id = hero.id)}}">edit</a>
-        <a class="material-icons modal-trigger" style="margin-left: 10px; margin-bottom: 10px; color: inherit;" href="#deleteHeroModal">delete</a>
+        <a class="material-icons modal-trigger" style="margin-left: 10px; margin-bottom: 10px; color: inherit;" href="#deleteHeroModal{{hero.id}}">delete</a>
       </div>
     </div>
-    <div id="deleteHeroModal" class="modal">
+    <div id="deleteHeroModal{{hero.id}}" class="modal">
       <div class="modal-content">
         <h4>Are you sure??</h4>
       </div>
       <div class="modal-footer">
-        <a href="#deleteHeroForm" onclick="submitHeroDelete()" class="modal-action modal-close waves-effect waves-green btn-flat">Yes</a>
+        <a href="#deleteHeroForm{{hero.id}}" onclick="submitHeroDelete({{hero.id}})" class="modal-action modal-close waves-effect waves-green btn-flat">Yes</a>
         <p class="modal-close waves-effect waves-green btn-flat">No</p>
       </div>
     </div>
-    <form id="deleteHeroForm" action="{{url_for('deleteHero', hero_id = hero.id)}}" method="POST">
-      <input type="submit" id="deleteHeroButton" style="display: none;" />
+    <form id="deleteHeroForm{{hero.id}}" action="{{url_for('deleteHero', hero_id = hero.id)}}" method="POST">
+      <input type="submit" id="deleteHeroButton{{hero.id}}" style="display: none;" />
     </form>
     {% endfor %}
     {% endif %}
@@ -117,16 +117,16 @@
         // the "href" attribute of the modal trigger must specify the modal ID that wants to be triggered
         $('.modal').modal();
       });
-      function submitMovieDelete() {
+      function submitMovieDelete(id) {
         if ({{info[2]}} == 1) {
-          $('#deleteMovieButton').click();
+          $('#deleteMovieButton' + id).click();
         } else {
           console.log("Not logged in!");  
         }
       };
-      function submitHeroDelete(argument) {
+      function submitHeroDelete(id) {
         if ({{info[2]}} == 1) {
-          $('#deleteHeroButton').click();
+          $('#deleteHeroButton' + id).click();
         } else {
           console.log("Not logged in!");
         }

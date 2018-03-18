@@ -434,6 +434,7 @@ def deleteMovie(movie_id):
         response.headers['Content-Type'] = "application/json"
         return response
     movie = session.query(Movie).filter_by(id=movie_id).one()
+    print (movie_id)
     # If it is a POST request, only then delete the movie.
     if request.method == 'POST':
         session.delete(movie)
