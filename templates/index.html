@@ -38,12 +38,9 @@
         <div class="card-content">
           <p class="truncate">{{movie.description}}</p>
         </div>
-        {% if info[2] == 1 %}
+        {% if info[2] == 1 and info[3].email == movie.created_by %}
         <a class="material-icons" style="margin-left: 10px; margin-bottom: 10px; color: inherit;" href="{{url_for('editMovie', movie_id = movie.id)}}">edit</a>
         <a class="material-icons modal-trigger" style="margin-left: 10px; margin-bottom: 10px; color: inherit;" href="#deleteMovieModal{{movie.id}}">delete</a>
-        {% else %}
-        <a class="material-icons" style="margin-left: 10px; margin-bottom: 10px; color: inherit; display: none;" href="{{url_for('editMovie', movie_id = movie.id)}}">edit</a>
-        <a class="material-icons modal-trigger" style="margin-left: 10px; margin-bottom: 10px; color: inherit; display: none;" href="#deleteMovieModal">delete</a>
         {% endif %}
       </div>
     </div>
@@ -71,8 +68,10 @@
         <div class="card-content">
           <p class="truncate">{{hero.description}}</p>
         </div>
+        {% if info[2] == 1 and info[3].email == hero.created_by %}
         <a class="material-icons" style="margin-left: 10px; margin-bottom: 10px; color: inherit;" href="{{url_for('editHero', hero_id = hero.id)}}">edit</a>
         <a class="material-icons modal-trigger" style="margin-left: 10px; margin-bottom: 10px; color: inherit;" href="#deleteHeroModal{{hero.id}}">delete</a>
+        {% endif %}
       </div>
     </div>
     <div id="deleteHeroModal{{hero.id}}" class="modal">

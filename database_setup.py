@@ -18,6 +18,7 @@ class Movie(Base):
     name = Column(Integer, nullable=False)
     description = Column(String(250), nullable=False)
     image_path = Column(String(100))
+    created_by = Column(String(200))
 
     # This method is used to convert the Movie object and return the Object
     # for JSON Response.
@@ -43,6 +44,7 @@ class Character(Base):
     movie = relationship(Movie)
     movie_id = Column(Integer, ForeignKey('movies.id'))
     image_path = Column(String(100))
+    created_by = Column(String(200))
 
     # This method is used to convert the Character object and return the
     # Object for JSON Response

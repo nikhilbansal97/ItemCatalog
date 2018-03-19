@@ -339,9 +339,10 @@ def newMovie():
     # If it is POST request, then create the new movie.
     if request.method == 'POST':
         name = request.form['inputName']
-        description = request.form['inputDescription']
+        d = request.form['inputDescription']
         link = request.form['inputLink']
-        movie = Movie(name=name, description=description, image_path=link)
+        e = lSession['email']
+        movie = Movie(name=name, description=d, image_path=link, created_by=e)
         session.add(movie)
         session.commit()
         return redirect(url_for('showMovies'))
@@ -454,10 +455,11 @@ def newHero():
     # If it is POST Request, only then create a new hero.
     if request.method == 'POST':
         name = request.form['inputName']
-        description = request.form['inputDescription']
+        d = request.form['inputDescription']
         link = request.form['inputLink']
-        hero = Character(name=name, description=description, image_path=link)
-        session.add(hero)
+        e = lSession['email']
+        h = Character(name=name, description=d, image_path=link, created_by=e)
+        session.add(h)
         session.commit()
         return redirect(url_for('showHeroes'))
     else:
