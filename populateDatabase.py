@@ -3,7 +3,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from database_setup import Base, Character, Movie
 
-engine = create_engine('sqlite:///marveldatabase.db')
+engine = create_engine('postgresql://nikhil:nikhil@localhost/marvels')
 Base.metadata.bind = engine
 
 DBSession = sessionmaker(bind=engine)

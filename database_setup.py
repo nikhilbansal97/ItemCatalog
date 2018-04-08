@@ -15,9 +15,9 @@ class Movie(Base):
 
     # Variables that act as columns for the table.
     id = Column(Integer, primary_key=True)
-    name = Column(Integer, nullable=False)
-    description = Column(String(250), nullable=False)
-    image_path = Column(String(100))
+    name = Column(String(250), nullable=False)
+    description = Column(String(1000), nullable=False)
+    image_path = Column(String(1000))
     created_by = Column(String(200))
 
     # This method is used to convert the Movie object and return the Object
@@ -43,7 +43,7 @@ class Character(Base):
     description = Column(String(250), nullable=False)
     movie = relationship(Movie)
     movie_id = Column(Integer, ForeignKey('movies.id'))
-    image_path = Column(String(100))
+    image_path = Column(String(1000))
     created_by = Column(String(200))
 
     # This method is used to convert the Character object and return the
@@ -68,5 +68,5 @@ class User(Base):
     email = Column(String(80), nullable=False)
     api_key = Column(String(40), nullable=False)
 
-engine = create_engine('sqlite:///marveldatabase.db')
+engine = create_engine('postgresql://nikhil:nikhil@localhost/marvels')
 Base.metadata.create_all(engine)
